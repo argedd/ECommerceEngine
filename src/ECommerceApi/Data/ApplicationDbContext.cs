@@ -1,4 +1,5 @@
 using ECommerceApi.Models;
+using ECommerceApi.Models.Categories;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApi.Data;

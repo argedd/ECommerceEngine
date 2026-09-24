@@ -1,0 +1,60 @@
+# =============================================
+# .NET / Visual Studio
+# =============================================
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+nuget.config.tmp
+packages/
+!**/packages/build/
+
+# MSBuild / Rider / VS
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+
+# Publish output
+publish/
+*.publish
+
+# =============================================
+# macOS
+# =============================================
+.DS_Store
+
+# =============================================
+# Misc
+# =============================================
+*.log
+*.tmp
+*.temp

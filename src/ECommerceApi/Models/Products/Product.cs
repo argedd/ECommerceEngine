@@ -1,3 +1,5 @@
+using ECommerceApi.Models.Categories;
+
 namespace ECommerceApi.Models;
 
 public class Product
