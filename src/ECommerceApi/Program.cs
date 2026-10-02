@@ -1,5 +1,6 @@
 using System.Text;
 using ECommerceApi.Data;
+using ECommerceApi.Repositories;
 using ECommerceApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,10 @@ using Microsoft.OpenApi;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+//middleware
+app.UseGlobalExceptionMiddleware();
 
 // 1. Inyección de Controladores de API
 builder.Services.AddControllers();
@@ -29,6 +34,13 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Conn
 
 // 4. Inyección de Servicios de Aplicación (Scoped por Request HTTP)
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductReadRepository, ProductReadRepository>();
+
+//4.1 add servicio del carrito 
+// Inyección de Servicios de Carrito
+builder.Services.AddScoped<ICartService, CartService>();
+//inyeccion del servicio de ordenes 
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 // 5. Configuración de Autenticación JWT Bearer
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -90,6 +102,12 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// 6.5 Sembrar datos iniciales de prueba al arrancar (migraciones + categorías + productos)
+using (var scope = app.Services.CreateScope())
+{
+    await DataSeeder.SeedDataAsync(scope.ServiceProvider);
+}
+
 // 7. Pipeline de Procesamiento HTTP
 if (app.Environment.IsDevelopment())
 {
@@ -104,5 +122,19 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+// Ejecutar el Seeder de datos iniciales
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await DataSeeder.SeedDataAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones o sembrar los datos iniciales.");
+    }
+}
 
 app.Run();
